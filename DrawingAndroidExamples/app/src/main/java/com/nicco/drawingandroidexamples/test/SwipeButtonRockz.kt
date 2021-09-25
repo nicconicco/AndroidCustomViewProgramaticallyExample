@@ -34,10 +34,7 @@ class SwipeButtonRockz constructor(
         configureBackground(context)
         val view = configureSwipeButton(rootLayout, context)
         rootLayout.addView(view)
-
-
-
-
+        
         setOnTouchListener(getButtonTouchListener())
     }
 
