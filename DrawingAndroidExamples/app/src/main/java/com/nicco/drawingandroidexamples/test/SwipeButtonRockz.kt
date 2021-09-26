@@ -72,7 +72,7 @@ class SwipeButtonRockz constructor(
     }
 
     private fun getButtonTouchListener(): OnTouchListener {
-        return OnTouchListener { v, event ->
+        return OnTouchListener { view, event ->
             when (event.action) {
                 ACTION_DOWN -> {
                     Log.d("getButtonTouchListener", "ACTION_DOWN")
@@ -83,11 +83,11 @@ class SwipeButtonRockz constructor(
 
                     configInitialState(event)
 
-                    if (checkIfMoveToRight(event, v)) {
+                    if (checkIfMoveToRight(event, view)) {
                         swipeButtonActivated = true
 
-                        if (checkIfSwipeButtonWidthIsInRangeOfView(result, v)) {
-                            configRightMove(event.x)
+                        if (checkIfSwipeButtonWidthIsInRangeOfView(result, view)) {
+                            configRightMove(event.x, view)
 
                             initialX = event.x.toInt()
                         }
@@ -146,10 +146,14 @@ class SwipeButtonRockz constructor(
     private fun checkIfWidthIsGreathenThanInitialSize(result: ViewGroup.LayoutParams) =
         result.width > initialSize
 
-    private fun configRightMove(moving: Float) {
+    private fun configRightMove(moving: Float, view: View) {
 
-        val moveResult = calculateLenghtMove(moving.toInt().dp)
+        var moveResult = calculateLenghtMove(moving.toInt().dp)
         Log.d("getButtonTouchListener", "moveResult = $moveResult")
+
+        if(moveResult > view.width) {
+            moveResult = view.width
+        }
 
         val layoutParamsView = LayoutParams(
             moveResult,
@@ -180,7 +184,7 @@ class SwipeButtonRockz constructor(
     private fun checkIfSwipeButtonWidthIsInRangeOfView(
         result: ViewGroup.LayoutParams,
         v: View
-    ) = result.width <= v.width
+    ) = result.width.dp <= v.width.dp
 
     private fun checkIfMoveToLeft(event: MotionEvent) = event.x < initialX && initialX > 0
 
