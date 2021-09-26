@@ -138,6 +138,16 @@ class SwipeButtonRockz constructor(
                         } else {
                             swipeButtonActivated = false
                             swipeButton.x = 8.dp.toFloat()
+
+                            val layoutParamsView = LayoutParams(
+                                initialSize,
+                                initialSize
+                            )
+                            layoutParamsView.startToStart = rootLayout.id
+                            layoutParamsView.topToTop = rootLayout.id
+                            layoutParamsView.bottomToBottom = rootLayout.id
+
+                            swipeButton.layoutParams = layoutParamsView
                         }
                     }
 
@@ -187,7 +197,7 @@ class SwipeButtonRockz constructor(
 
         val layoutParamsView = LayoutParams(
             moveResult,
-            initialSize
+            view.height
         )
         layoutParamsView.startToStart = rootLayout.id
         layoutParamsView.topToTop = rootLayout.id
