@@ -94,7 +94,7 @@ class SwipeButtonRockz constructor(
 
                     } else if (checkIfMoveToLeft(event)) {
                         if (checkIfWidthIsGreathenThanInitialSize(result)) {
-                            configLeftMove(event.x)
+                            configLeftMove(event.x, view)
                             initialX = event.x.toInt()
                         } else {
                             swipeButtonActivated = false
@@ -129,8 +129,10 @@ class SwipeButtonRockz constructor(
         }
     }
 
-    private fun configLeftMove(moving: Float) {
-        val moveResult = calculateLenghtMove(moving.toInt().dp)
+    private fun configLeftMove(moving: Float, view: View) {
+        var moveResult = calculateLenghtMove(moving.toInt().dp)
+
+        moveResult = controllerMinimunWidthRange(moveResult, view)
 
         val layoutParamsView = LayoutParams(
             moveResult,
@@ -143,6 +145,14 @@ class SwipeButtonRockz constructor(
         swipeButton.layoutParams = layoutParamsView
     }
 
+    private fun controllerMinimunWidthRange(moveResult: Int, view: View): Int {
+        var moveResult1 = moveResult
+        if (moveResult1 < initialSize) {
+            moveResult1 = initialSize
+        }
+        return moveResult1
+    }
+
     private fun checkIfWidthIsGreathenThanInitialSize(result: ViewGroup.LayoutParams) =
         result.width > initialSize
 
@@ -151,9 +161,7 @@ class SwipeButtonRockz constructor(
         var moveResult = calculateLenghtMove(moving.toInt().dp)
         Log.d("getButtonTouchListener", "moveResult = $moveResult")
 
-        if(moveResult > view.width) {
-            moveResult = view.width
-        }
+        moveResult = controllerMaxWidthRange(moveResult, view)
 
         val layoutParamsView = LayoutParams(
             moveResult,
@@ -169,6 +177,14 @@ class SwipeButtonRockz constructor(
         layoutParamsView.bottomToBottom = rootLayout.id
 
         swipeButton.layoutParams = layoutParamsView
+    }
+
+    private fun controllerMaxWidthRange(moveResult: Int, view: View): Int {
+        var moveResult1 = moveResult
+        if (moveResult1 > view.width) {
+            moveResult1 = view.width
+        }
+        return moveResult1
     }
 
     private fun calculateLenghtMove(eventMove: Int): Int {
