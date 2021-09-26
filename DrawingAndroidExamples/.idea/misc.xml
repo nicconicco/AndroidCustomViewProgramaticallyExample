@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CustomViewProgramaticallyExample/AndroidCustomViewProgramaticallyExample/DrawingAndroidExamples/app/src/main/res/drawable/ic_baseline_arrow_upward_24.xml" value="0.23981481481481481" />
+        <entry key="..\:/CustomViewProgramaticallyExample/AndroidCustomViewProgramaticallyExample/DrawingAndroidExamples/app/src/main/res/drawable/ic_launcher_background.xml" value="0.23981481481481481" />
+        <entry key="..\:/CustomViewProgramaticallyExample/AndroidCustomViewProgramaticallyExample/DrawingAndroidExamples/app/src/main/res/drawable/shape_rounded_blue.xml" value="0.23981481481481481" />
+        <entry key="..\:/CustomViewProgramaticallyExample/AndroidCustomViewProgramaticallyExample/DrawingAndroidExamples/app/src/main/res/drawable/shape_rounded_white.xml" value="0.23981481481481481" />
+        <entry key="..\:/CustomViewProgramaticallyExample/AndroidCustomViewProgramaticallyExample/DrawingAndroidExamples/app/src/main/res/drawable/up_image.xml" value="0.23981481481481481" />
         <entry key="..\:/DrawingAndroidExamples/app/src/main/res/drawable/ic_baseline_arrow_upward_24.xml" value="0.21666666666666667" />
         <entry key="..\:/DrawingAndroidExamples/app/src/main/res/drawable/shape_rounded_blue.xml" value="0.20555555555555555" />
         <entry key="..\:/DrawingAndroidExamples/app/src/main/res/drawable/shape_rounded_white.xml" value="0.31614583333333335" />

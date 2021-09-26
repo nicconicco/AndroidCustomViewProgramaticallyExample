@@ -5,14 +5,20 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.util.Log
+import android.view.Gravity.CENTER
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.nicco.drawingandroidexamples.R
+import android.util.TypedValue
+
+
+
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -21,6 +27,8 @@ class SwipeButtonRockz constructor(
     attributeSet: AttributeSet
 ) : ConstraintLayout(context) {
 
+    private var primaryText: TextView
+    private var secondaryText: TextView
     private var swipeButtonActivated: Boolean = false
     private val initialMargin: Int = 8.dp
     private var controllerMargin: Int = 1.dp
@@ -32,10 +40,42 @@ class SwipeButtonRockz constructor(
     init {
         removeView(this)
         configureBackground(context)
-        val view = configureSwipeButton(rootLayout, context)
-        rootLayout.addView(view)
-        
+
+        val swipeButton = configureSwipeButton(rootLayout, context)
+        rootLayout.addView(swipeButton)
+
+        primaryText = configureText(rootLayout, context, "Swipe to confirm")
+        rootLayout.addView(primaryText)
+
+        secondaryText = configureText(rootLayout, context, "Done")
+        secondaryText.visibility = GONE
+        rootLayout.addView(secondaryText)
+
         setOnTouchListener(getButtonTouchListener())
+    }
+
+    private fun configureText(
+        rootViewGroup: ConstraintLayout,
+        context: Context,
+        text: String
+    ): TextView {
+        val layoutParamsView = LayoutParams(
+            LayoutParams.MATCH_CONSTRAINT,
+            LayoutParams.MATCH_CONSTRAINT
+        )
+        layoutParamsView.startToStart = rootViewGroup.id
+        layoutParamsView.topToTop = rootViewGroup.id
+        layoutParamsView.bottomToBottom = rootViewGroup.id
+        layoutParamsView.endToEnd = rootViewGroup.id
+
+        val textView = TextView(context)
+        textView.id = generateViewId()
+        textView.layoutParams = layoutParamsView
+        textView.text = text
+        textView.textSize = convertSpToPixels(8F, context)
+        textView.gravity = CENTER
+        
+        return textView
     }
 
     private fun configureSwipeButton(
@@ -91,7 +131,6 @@ class SwipeButtonRockz constructor(
 
                             initialX = event.x.toInt()
                         }
-
                     } else if (checkIfMoveToLeft(event)) {
                         if (checkIfWidthIsGreathenThanInitialSize(result)) {
                             configLeftMove(event.x, view)
@@ -102,7 +141,8 @@ class SwipeButtonRockz constructor(
                         }
                     }
 
-
+                    shouldChangeText(view)
+//region used for debug
 //                    Log.d("getButtonTouchListener", "ACTION_MOVE")
 //                    Log.d("getButtonTouchListener", "event.x = ${event.x}")
 //                    Log.d("getButtonTouchListener", "swipeButtonActivated = $swipeButtonActivated")
@@ -111,6 +151,7 @@ class SwipeButtonRockz constructor(
 //                    Log.d("getButtonTouchListener", "v.width = ${v.width.dp}")
 //                    Log.d("getButtonTouchListener", "result.height = ${result.height.dp}")
 //                    Log.d("getButtonTouchListener", "v.height = ${result.height.dp}")
+// endregion
                     return@OnTouchListener true
                 }
 
@@ -120,6 +161,16 @@ class SwipeButtonRockz constructor(
                 }
             }
             false
+        }
+    }
+
+    private fun shouldChangeText(view: View) {
+        if(initialX.dp > view.width.dp / 2) {
+            primaryText.visibility = GONE
+            secondaryText.visibility = VISIBLE
+        } else {
+            primaryText.visibility = VISIBLE
+            secondaryText.visibility = GONE
         }
     }
 
@@ -213,6 +264,13 @@ class SwipeButtonRockz constructor(
 val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
+fun convertSpToPixels(sp: Float, context: Context): Float {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        sp,
+        context.resources.displayMetrics
+    )
+}
 /**
  * I will need this example maybe in future, how to configure constraints
  *
