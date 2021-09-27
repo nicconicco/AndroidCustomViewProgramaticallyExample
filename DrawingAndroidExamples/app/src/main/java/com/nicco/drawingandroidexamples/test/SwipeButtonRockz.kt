@@ -44,10 +44,10 @@ class SwipeButtonRockz constructor(
         val swipeButton = configureSwipeButton(rootLayout, context)
         rootLayout.addView(swipeButton)
 
-        primaryText = configureText(rootLayout, context, "Swipe to confirm")
+        primaryText = configureText(rootLayout, context, "Swipe to confirm", R.color.black)
         rootLayout.addView(primaryText)
 
-        secondaryText = configureText(rootLayout, context, "Done")
+        secondaryText = configureText(rootLayout, context, "Done", R.color.white)
         secondaryText.visibility = GONE
         rootLayout.addView(secondaryText)
 
@@ -57,7 +57,8 @@ class SwipeButtonRockz constructor(
     private fun configureText(
         rootViewGroup: ConstraintLayout,
         context: Context,
-        text: String
+        text: String,
+        textColor: Int
     ): TextView {
         val layoutParamsView = LayoutParams(
             LayoutParams.MATCH_CONSTRAINT,
@@ -72,6 +73,7 @@ class SwipeButtonRockz constructor(
         textView.id = generateViewId()
         textView.layoutParams = layoutParamsView
         textView.text = text
+        textView.setTextColor(ContextCompat.getColor(context, textColor))
         textView.textSize = convertSpToPixels(8F, context)
         textView.gravity = CENTER
         
