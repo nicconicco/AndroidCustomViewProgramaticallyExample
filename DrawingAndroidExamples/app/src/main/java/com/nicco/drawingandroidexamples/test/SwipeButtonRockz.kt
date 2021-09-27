@@ -16,9 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.nicco.drawingandroidexamples.R
 import android.util.TypedValue
-
-
-
+import android.widget.ImageView
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -27,6 +25,7 @@ class SwipeButtonRockz constructor(
     attributeSet: AttributeSet
 ) : ConstraintLayout(context) {
 
+    private lateinit var arrowRight: ImageView
     private var primaryText: TextView
     private var secondaryText: TextView
     private var swipeButtonActivated: Boolean = false
@@ -44,6 +43,9 @@ class SwipeButtonRockz constructor(
         val swipeButton = configureSwipeButton(rootLayout, context)
         rootLayout.addView(swipeButton)
 
+        val arrowRight = configureArrowRight(rootLayout, context)
+        rootLayout.addView(arrowRight)
+
         primaryText = configureText(rootLayout, context, "Swipe to confirm", R.color.black)
         rootLayout.addView(primaryText)
 
@@ -52,6 +54,24 @@ class SwipeButtonRockz constructor(
         rootLayout.addView(secondaryText)
 
         setOnTouchListener(getButtonTouchListener())
+    }
+
+    private fun configureArrowRight(rootViewGroup: ConstraintLayout, context: Context): View {
+        val layoutParamsView = LayoutParams(
+            40.dp,
+            40.dp
+        )
+        layoutParamsView.startToStart = rootViewGroup.id
+        layoutParamsView.topToTop = rootViewGroup.id
+        layoutParamsView.bottomToBottom = rootViewGroup.id
+        layoutParamsView.marginStart = initialMargin
+
+        val view = ImageView(context)
+        view.id = generateViewId()
+        view.layoutParams = layoutParamsView
+        view.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_arrow_right))
+        this.arrowRight = view
+        return view
     }
 
     private fun configureText(
@@ -76,7 +96,7 @@ class SwipeButtonRockz constructor(
         textView.setTextColor(ContextCompat.getColor(context, textColor))
         textView.textSize = convertSpToPixels(8F, context)
         textView.gravity = CENTER
-        
+
         return textView
     }
 
@@ -126,7 +146,8 @@ class SwipeButtonRockz constructor(
                     configInitialState(event)
 
                     if (checkIfMoveToRight(event, view)) {
-                        swipeButtonActivated = true
+
+                        arrowRight.visibility = GONE
 
                         if (checkIfSwipeButtonWidthIsInRangeOfView(result, view)) {
                             configRightMove(event.x, view)
@@ -138,8 +159,9 @@ class SwipeButtonRockz constructor(
                             configLeftMove(event.x, view)
                             initialX = event.x.toInt()
                         } else {
-                            swipeButtonActivated = false
                             swipeButton.x = 8.dp.toFloat()
+                            
+                            arrowRight.visibility = VISIBLE
 
                             val layoutParamsView = LayoutParams(
                                 initialSize,
@@ -177,7 +199,7 @@ class SwipeButtonRockz constructor(
     }
 
     private fun shouldChangeText(view: View) {
-        if(initialX.dp > view.width.dp / 2) {
+        if (initialX.dp > view.width.dp / 2) {
             primaryText.visibility = GONE
             secondaryText.visibility = VISIBLE
         } else {
