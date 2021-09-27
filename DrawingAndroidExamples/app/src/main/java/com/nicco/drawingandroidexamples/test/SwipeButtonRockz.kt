@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity.CENTER
 import android.view.MotionEvent
 import android.view.MotionEvent.*
@@ -146,7 +145,6 @@ class SwipeButtonRockz constructor(
         return OnTouchListener { view, event ->
             when (event.action) {
                 ACTION_DOWN -> {
-                    Log.d("getButtonTouchListener", "ACTION_DOWN")
                     return@OnTouchListener true
                 }
                 ACTION_MOVE -> {
@@ -188,7 +186,6 @@ class SwipeButtonRockz constructor(
 
                 ACTION_UP -> {
                     shouldExpandButton(view)
-                    Log.d("getButtonTouchListener", "ACTION_UP")
                     return@OnTouchListener true
                 }
             }
@@ -264,9 +261,7 @@ class SwipeButtonRockz constructor(
         result.width > initialSize
 
     private fun configRightMove(moving: Float, view: View) {
-
         var moveResult = calculateLenghtMove(moving.toInt().dp)
-        Log.d("getButtonTouchListener", "moveResult = $moveResult")
 
         moveResult = controllerMaxWidthRange(moveResult, view)
 
@@ -295,8 +290,6 @@ class SwipeButtonRockz constructor(
     }
 
     private fun calculateLenghtMove(eventMove: Int): Int {
-        Log.d("getButtonTouchListener", "initialX = $initialX")
-        Log.d("getButtonTouchListener", "eventMove = $eventMove")
         return if (initialX > eventMove) {
             initialX - eventMove
         } else {
