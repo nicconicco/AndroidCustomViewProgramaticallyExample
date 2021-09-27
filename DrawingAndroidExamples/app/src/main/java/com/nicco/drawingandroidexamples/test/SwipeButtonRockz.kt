@@ -17,6 +17,13 @@ import androidx.core.content.ContextCompat
 import com.nicco.drawingandroidexamples.R
 import android.util.TypedValue
 import android.widget.ImageView
+import android.animation.AnimatorSet
+
+import android.animation.Animator
+
+import android.animation.AnimatorListenerAdapter
+
+import android.animation.ValueAnimator
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -160,7 +167,7 @@ class SwipeButtonRockz constructor(
                             initialX = event.x.toInt()
                         } else {
                             swipeButton.x = 8.dp.toFloat()
-                            
+
                             arrowRight.visibility = VISIBLE
 
                             val layoutParamsView = LayoutParams(
@@ -190,12 +197,18 @@ class SwipeButtonRockz constructor(
                 }
 
                 ACTION_UP -> {
+                    shouldExpandButton(view)
                     Log.d("getButtonTouchListener", "ACTION_UP")
                     return@OnTouchListener true
                 }
             }
             false
         }
+    }
+
+    private fun shouldExpandButton(view: View) {
+        if(initialX.dp >= rootLayout.width.dp * 3 / 7)
+            expandButton()
     }
 
     private fun shouldChangeText(view: View) {
@@ -282,6 +295,34 @@ class SwipeButtonRockz constructor(
         }
     }
 
+    private fun expandButton() {
+        val positionAnimator = ValueAnimator.ofFloat(swipeButton.x, 0f)
+
+        val widthAnimator = ValueAnimator.ofInt(
+            swipeButton.width,
+            width
+        )
+
+        widthAnimator.addUpdateListener {
+            val params: ViewGroup.LayoutParams = swipeButton.layoutParams
+            params.width = (widthAnimator.animatedValue as Int)
+            swipeButton.layoutParams = params
+        }
+
+
+        val animatorSet = AnimatorSet()
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                primaryText.visibility = GONE
+                secondaryText.visibility = VISIBLE
+            }
+        })
+
+        animatorSet.playTogether(positionAnimator, widthAnimator)
+        animatorSet.start()
+    }
+
     private fun checkIfSwipeButtonWidthIsInRangeOfView(
         result: ViewGroup.LayoutParams,
         v: View
@@ -305,6 +346,7 @@ fun convertSpToPixels(sp: Float, context: Context): Float {
         context.resources.displayMetrics
     )
 }
+
 /**
  * I will need this example maybe in future, how to configure constraints
  *
