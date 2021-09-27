@@ -24,6 +24,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 
 import android.animation.ValueAnimator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -166,19 +168,7 @@ class SwipeButtonRockz constructor(
                             configLeftMove(event.x, view)
                             initialX = event.x.toInt()
                         } else {
-                            swipeButton.x = 8.dp.toFloat()
-
-                            arrowRight.visibility = VISIBLE
-
-                            val layoutParamsView = LayoutParams(
-                                initialSize,
-                                initialSize
-                            )
-                            layoutParamsView.startToStart = rootLayout.id
-                            layoutParamsView.topToTop = rootLayout.id
-                            layoutParamsView.bottomToBottom = rootLayout.id
-
-                            swipeButton.layoutParams = layoutParamsView
+                            configInitialStateSwipeButton()
                         }
                     }
 
@@ -206,9 +196,28 @@ class SwipeButtonRockz constructor(
         }
     }
 
+    private fun configInitialStateSwipeButton() {
+        swipeButton.x = 8.dp.toFloat()
+
+        arrowRight.visibility = VISIBLE
+
+        val layoutParamsView = LayoutParams(
+            initialSize,
+            initialSize
+        )
+        layoutParamsView.startToStart = rootLayout.id
+        layoutParamsView.topToTop = rootLayout.id
+        layoutParamsView.bottomToBottom = rootLayout.id
+
+        swipeButton.layoutParams = layoutParamsView
+    }
+
     private fun shouldExpandButton(view: View) {
-        if(initialX.dp >= rootLayout.width.dp * 3 / 7)
+        if(initialX.dp >= rootLayout.width.dp * 3 / 7) {
             expandButton()
+        } else {
+            collapseButton()
+        }
     }
 
     private fun shouldChangeText(view: View) {
@@ -316,6 +325,36 @@ class SwipeButtonRockz constructor(
                 super.onAnimationEnd(animation)
                 primaryText.visibility = GONE
                 secondaryText.visibility = VISIBLE
+            }
+        })
+
+        animatorSet.playTogether(positionAnimator, widthAnimator)
+        animatorSet.start()
+    }
+
+    private fun collapseButton() {
+        val positionAnimator = ValueAnimator.ofFloat(swipeButton.x, 0f)
+
+        val widthAnimator = ValueAnimator.ofInt(
+            swipeButton.width,
+            40.dp
+        )
+
+        widthAnimator.addUpdateListener {
+            val params: ViewGroup.LayoutParams = swipeButton.layoutParams
+            params.width = (widthAnimator.animatedValue as Int)
+            swipeButton.layoutParams = params
+        }
+
+
+        val animatorSet = AnimatorSet()
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                primaryText.visibility = VISIBLE
+                secondaryText.visibility = GONE
+
+                configInitialStateSwipeButton()
             }
         })
 
